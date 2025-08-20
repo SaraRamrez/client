@@ -1,77 +1,110 @@
-// Importamos la función useState de React, que nos permite guardar datos dentro del componente
 import { useState } from 'react';
-// Importamos el estilo de la aplicación
 import './App.css';
 
 function App() {
-  // Guardamos lo que el usuario escriba en los campos
   const [user, setUser] = useState('');
-
-    const [pass, setPass] = useState('');
-
+  const [pass, setPass] = useState('');
   const [error, setError] = useState('');
-  // Mostramos la pantalla de login
   const [step, setStep] = useState('login');
-  // Guardamos el nombre del canal que se escriba
   const [canal, setCanal] = useState('');
-  // Guardamos un mensaje de resultado después de intentar activar el bot
   const [msg, setMsg] = useState('');
 
-  // Función que se ejecuta cuando se intenta iniciar sesión
+  // Función de login
   const login = async e => {
-    e.preventDefault(); // Evitamos que la página se recargue al enviar el formulario
+    e.preventDefault(); 
 
-    // Enviamos al servidor el usuario y contraseña para comprobar si son correctos
-    const resp = await fetch('/user/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user, pass }) 
-    });
+    const url = `/user/login?user=${user}&password=${pass}`;
 
-    const res = await resp.json();
-    if (res.success) setStep('activar');
-    else setError(res.message); 
+    try {
+      const resp = await fetch(url, { method: 'GET' });
+
+      if (!resp.ok) {
+        setError('Error en el servidor');
+        return;
+      }
+
+      const res = await resp.json(); // true o false
+
+      if (res === true) {
+        setStep('activar');
+        setError('');
+      } else {
+        setError('Error de credenciales');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('No se pudo conectar con el servidor');
+    }
   };
 
-  // Función que se ejecuta cuando se intenta activar el bot
+  // Función para activar el bot
   const activar = async e => {
     e.preventDefault(); 
 
-    // Enviamos al servidor el nombre del canal para activar el bot
-    const resp = await fetch('/twitch/activar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ canal })
-    });
+  const urlBan = `/twitch/ban?canal=${canal}`;
+    try {
+      const resp = await fetch(urlBan, {
+        method: 'GET',
+      });
 
-    const res = await resp.json();
+      if (!resp.ok) {
+        setMsg('Error en el servidor');
+        return;
+      }
 
-    setMsg(res.activated ? '¡Bot activado!' : res.message);
+      const res = await resp.json(); // true o false
+      // console.log(res);
+
+      if (res === true) {
+        setMsg('¡Bot activado!');
+      } else {
+        setMsg('No se pudo activar el bot');
+      }
+    } catch (err) {
+      console.error(err);
+      setMsg('No se pudo conectar con el servidor');
+    }
   };
-
 
   return step === 'login' ? (
     <form onSubmit={login}>
       <h1>Login</h1>
 
-      <input value={user} onChange={e=>setUser(e.target.value)} placeholder="usuario" required />
+      <input
+        value={user}
+        onChange={e => setUser(e.target.value)}
+        placeholder="usuario"
+        required
+      />
 
-      <input type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder="contraseña" required />
+      <input
+        type="password"
+        value={pass}
+        onChange={e => setPass(e.target.value)}
+        placeholder="contraseña"
+        required
+      />
+
       <button type="submit">Entrar</button>
 
-      {error && <p style={{color:'red'}}>{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </form>
   ) : (
-    <form onSubmit={activar}> 
+    <form onSubmit={activar}>
       <h1>Activar Bot</h1>
 
-      <input value={canal} onChange={e=>setCanal(e.target.value)} placeholder="Nombre del canal" required />
+      <input
+        value={canal}
+        onChange={e => setCanal(e.target.value)}
+        placeholder="Nombre del canal"
+        required
+      />
+
       <button type="submit">Activar</button>
 
       {msg && <p>{msg}</p>}
     </form>
   );
 }
-
 
 export default App;
