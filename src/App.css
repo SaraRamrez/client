@@ -1,65 +1,103 @@
+ @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        body {
+            margin: 0;
+            font-family: 'Bebas Neue', sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
+        form {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 8px 32px rgba(145, 70, 255, 0.1);
+        }
 
-/* Estilos globales */
-body {
-  font-family: 'Bebas Neue', cursive;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+        .form-container {
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 1.5rem;
+            animation: neonBorder 3s linear infinite;
+            transition: all 0.3s ease;
+        }
 
-h1 {
-  text-align: center;
-  color: #333;
-}
+        @keyframes neonBorder {
+            0% { 
+                box-shadow: 0 0 5px #9146ff,
+                          0 0 10px #9146ff,
+                          0 0 15px #9146ff; 
+            }
+            50% { 
+                box-shadow: 0 0 5px #ff00ff,
+                          0 0 10px #ff00ff,
+                          0 0 15px #ff00ff; 
+            }
+            100% { 
+                box-shadow: 0 0 5px #9146ff,
+                          0 0 10px #9146ff,
+                          0 0 15px #9146ff; 
+            }
+        }
 
-/* Estilos del formulario */
-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
+        h1 {
+            font-size: 2rem;
+            color: #ffffff;
+            margin: 0;
+            text-align: center;
+            opacity: 0.95;
+        }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #a59c9c;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #9809eb;
-  color: rgb(247, 242, 242);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(145, 70, 255, 0.3);
+        }
 
-button:hover {
-  background-color: #810dc4;
-}
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #9146ff, #ff00ff);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
 
-/* Estilos para mensajes de error o éxito */
-p {
-  text-align: center;
-  font-size: 25px;
-  color: #d9534f;
-}
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(145, 70, 255, 0.3);
+        }
 
-p.success {
-  color: #5bc0de;
-}
+        .error {
+            color: #ff4c4c;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
