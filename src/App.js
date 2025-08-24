@@ -62,8 +62,8 @@ function App() {
   // Función para cerrar sesión
 const cerrarSesion = () => {
   setLogueado(false); // resetea el estado de login
-  setCanal('');       // opcional: limpia el input del canal
-  setMsg('');         // opcional: limpia mensajes
+  setCanal('');
+  setMsg('');
 };
 
   // Si ya está logueado, mostramos el formulario de activar bot
