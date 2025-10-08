@@ -4,23 +4,50 @@ import './App.css';
 function App() {
   // Esto indica si el usuario ya ha iniciado sesión
   const [logueado, setLogueado] = useState(false);
-
-  // Estado para el formulario de activar bot
-  const [canal, setCanal] = useState('');
+  const [usuario, setUsuario] = useState(null); //Aquí se guardan los datos del array que hemos visto que devuelve Twitch
   const [msg, setMsg] = useState('');
 
   // Datos de la app de twitch (la consola dev)
   const CLIENT_ID = 'enr7qpasu333kkml5l5g3x5fks2rgd';
   const REDIRECT_URI = 'http://localhost:3000/callback';
-  const SCOPES = ['chat:read', 'chat:edit'];
+  const SCOPES = ['chat:read', 'chat:edit', 'user:edit'];
 
-  // Al cargar la app, verificamos si Twitch devolvió un token en la URL
+
   useEffect(() => {
-    if (window.location.hash.includes('access_token')) {
-      setLogueado(true); // el usuario ya hizo login
-      window.location.hash = ''; // limpiamos la URL para que quede más bonita
+  const run = async () => {
+    if (!window.location.hash.includes('access_token')) return;
+
+    const params = new URLSearchParams(window.location.hash.substring(1));
+    console.log("hola " + params);
+    
+    const token = params.get('access_token');
+
+    try {
+
+      const res = await fetch('https://api.twitch.tv/helix/users', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Client-ID': CLIENT_ID
+        }
+      });
+
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error(`helix/users ${res.status}: ${t}`);
+      }
+
+      const { data } = await res.json();
+      setUsuario(data?.[0]);
+      setLogueado(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      window.location.hash = '';
     }
-  }, []);
+  };
+
+  run();
+}, []);
 
   // Función para iniciar sesión con Twitch
   const loginConTwitch = () => {
@@ -32,7 +59,7 @@ function App() {
   const activarBot = async (e) => {
     e.preventDefault();
 
-    const urlBan = `/twitch/ban?canal=${canal}`;
+    const urlBan = `/twitch/ban?canal=${usuario.login}`;
     try {
       const resp = await fetch(urlBan, { method: 'GET' });
 
@@ -59,30 +86,27 @@ function App() {
     );
   }
 
-  // Función para cerrar sesión
-const cerrarSesion = () => {
-  setLogueado(false); // resetea el estado de login
-  setCanal('');
-  setMsg('');
-};
 
   // Si ya está logueado, mostramos el formulario de activar bot
   return (
     
     <form onSubmit={activarBot}>
 
+        {usuario?.profile_image_url && (
+    <img
+      src={usuario.profile_image_url}
+      alt={`Avatar de ${usuario.display_name}`}
+      style={{ width: 80, height: 80, borderRadius: '50%' }}
+    />
+  )}
 
-      <input
-        value={canal}
-        onChange={(e) => setCanal(e.target.value)}
-        placeholder="Nombre del canal"
-        required
-      />
+{/* // Aquí le decismos de mostrar el display name del array que hemos visto en consola */}
+
+      <label>Canal: {usuario?.display_name}</label> 
 
       <button type="submit">Activar</button>
 
       {msg && <p>{msg}</p>}
-      <button onClick={cerrarSesion}>Cerrar sesión</button>
     </form>
   );
 }
