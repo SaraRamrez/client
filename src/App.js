@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import Constants from './constants';
 
 function App() {
   // Esto indica si el usuario ya ha iniciado sesión
@@ -9,7 +10,7 @@ function App() {
 
   // Datos de la app de twitch (la consola dev)
   const CLIENT_ID = 'enr7qpasu333kkml5l5g3x5fks2rgd';
-  const REDIRECT_URI = 'http://localhost:3000/callback';
+  const REDIRECT_URI = Constants.API_BASE_URL + 'callback';
   const SCOPES = ['chat:read', 'chat:edit', 'user:edit'];
 
 
