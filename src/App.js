@@ -9,7 +9,7 @@ function App() {
   const [msg, setMsg] = useState('');
 
   // Datos de la app de twitch (la consola dev)
-  const CLIENT_ID = 'enr7qpasu333kkml5l5g3x5fks2rgd';
+  const CLIENT_ID = '4rcb0nzhikg0zjwneyvrooz0qbgtn0';
   const REDIRECT_URI = Constants.API_BASE_URL + 'callback';
   const SCOPES = ['chat:read', 'chat:edit', 'user:edit'];
 
